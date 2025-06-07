@@ -1,103 +1,102 @@
+'use client'
+// src/app/page.js
+import Link from "next/link";
 import Image from "next/image";
+import { FaInfinity, FaSquareRootAlt, FaDivide, FaEquals, FaPlus, FaMinus } from 'react-icons/fa';
+
+// SVG Corona para el auto
+const Corona = () => (
+  <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute -top-10 left-1/2 -translate-x-1/2 drop-shadow-lg">
+    <path d="M4 24L12 8L24 20L36 8L44 24" stroke="#FFD700" strokeWidth="4" fill="none"/>
+    <circle cx="12" cy="8" r="3" fill="#FFD700" stroke="#FFC700" strokeWidth="2"/>
+    <circle cx="36" cy="8" r="3" fill="#FFD700" stroke="#FFC700" strokeWidth="2"/>
+    <circle cx="24" cy="20" r="3" fill="#FFD700" stroke="#FFC700" strokeWidth="2"/>
+  </svg>
+);
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden flex flex-col items-center justify-center">
+      {/* Fondo de símbolos matemáticos decorativos */}
+      <div className="pointer-events-none select-none absolute inset-0 z-0 opacity-20">
+        <div className="absolute top-10 left-10 text-7xl text-blue-900 animate-spin-slow"><FaInfinity /></div>
+        <div className="absolute top-1/2 left-1/4 text-6xl text-purple-900 animate-float"><FaSquareRootAlt /></div>
+        <div className="absolute bottom-1/3 left-1/2 text-6xl text-yellow-900 animate-float"><FaPlus /></div>
+        <div className="absolute top-1/4 right-1/3 text-5xl text-pink-900 animate-float"><FaDivide /></div>
+        <div className="absolute bottom-10 left-1/5 text-6xl text-cyan-900 animate-spin-slow"><FaEquals /></div>
+        <div className="absolute top-1/3 right-10 text-7xl text-indigo-900 animate-float"><FaMinus /></div>
+      </div>
+      {/* Confeti animado sutil */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden z-10">
+        {[...Array(20)].map((_, i) => (
+          <div key={i} className={`confeti confeti-${i % 8}`} style={{ left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 2}s` }} />
+        ))}
+      </div>
+      {/* Contenido principal */}
+      <div className="relative z-20 flex flex-col items-center justify-center w-full">
+        <div className="flex flex-col items-center mb-10">
+          <div className="relative mb-4">
+            <Corona />
+            <Image src="/carro1.jpg" alt="Carro" width={120} height={60} className="rounded-2xl shadow-2xl border-4 border-yellow-400" />
+          </div>
+          <h1 className="text-5xl font-extrabold text-yellow-300 drop-shadow-lg mb-4 animate-fade-in text-center">Carrera de Cálculo</h1>
+          <p className="text-xl text-blue-100 max-w-xl mx-auto text-center mb-2 animate-fade-in">
+            ¡Bienvenido! Elige tu coche y compite respondiendo preguntas de cálculo.<br/>
+            Si fallas, tu auto no avanza. ¡Gana quien llegue primero a la meta!
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/carrera"
+          className="bg-gradient-to-br from-yellow-400 to-red-500 px-10 py-5 text-white rounded-2xl text-2xl font-bold shadow-xl hover:scale-105 transition-transform animate-fade-in"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          Iniciar Carrera
+        </Link>
+      </div>
+      {/* Animaciones personalizadas para símbolos y confeti */}
+      <style jsx global>{`
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 5s ease-in-out infinite; }
+        @keyframes spin-slow {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow { animation: spin-slow 18s linear infinite; }
+        @keyframes spin-reverse {
+          0% { transform: rotate(360deg); }
+          100% { transform: rotate(0deg); }
+        }
+        .animate-spin-reverse { animation: spin-reverse 22s linear infinite; }
+        @keyframes fade-in {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fade-in 0.6s ease; }
+        @keyframes confeti-fall {
+          0% { transform: translateY(0) rotate(0deg); }
+          100% { transform: translateY(110vh) rotate(360deg); }
+        }
+        .confeti {
+          position: absolute;
+          top: -40px;
+          width: 16px;
+          height: 16px;
+          border-radius: 4px;
+          opacity: 0.7;
+          animation: confeti-fall 2.5s linear infinite;
+        }
+        .confeti-0 { background: #FFD700; }
+        .confeti-1 { background: #FF69B4; }
+        .confeti-2 { background: #00E6FF; }
+        .confeti-3 { background: #7CFC00; }
+        .confeti-4 { background: #FF4500; }
+        .confeti-5 { background: #8A2BE2; }
+        .confeti-6 { background: #FFF; }
+        .confeti-7 { background: #FFB300; }
+      `}</style>
+    </main>
   );
 }

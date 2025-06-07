@@ -1,0 +1,137 @@
+DERIVADAS
+---------
+1. ¿Qué representa la derivada de una función?
+R: La pendiente de la tangente
+2. ¿Cuál es la derivada de f(x) = 4x^3 - 2x^2 + x - 7?
+R: 12x^2 - 4x + 1
+3. ¿Cuál es la interpretación física de la derivada en física?
+R: Velocidad instantánea
+4. Si f(x) = √x, entonces f'(x) =
+R: 1/(2√x)
+5. ¿Qué significa que la derivada de una función sea negativa en un intervalo?
+R: Que la función es decreciente
+6. La derivada de una constante es:
+R: 0
+7. ¿Quién fue uno de los creadores del concepto de derivada?
+R: Isaac Newton
+8. ¿Para qué sirve la derivada en la vida real?
+R: Para analizar cambios y tasas de variación
+9. ¿Cuál es la notación de Leibniz para la derivada?
+R: df/dx
+10. ¿Qué significa que una función sea derivable?
+R: Que tiene derivada en todos los puntos de su dominio
+11. ¿Qué relación hay entre derivada y continuidad?
+R: Si es derivable, es continua
+
+ANÁLISIS
+---------
+1. Si f'(x) = 0, entonces x es:
+R: Un punto crítico
+2. Si f''(x) > 0, entonces la función es:
+R: Cóncava hacia arriba
+3. ¿Qué indica un cambio de signo en la segunda derivada?
+R: Un punto de inflexión
+4. Si f(x) = x^3, ¿dónde hay un punto de inflexión?
+R: En x = 0
+5. ¿Cuándo una función tiene un máximo relativo?
+R: Cuando cambia de creciente a decreciente
+6. ¿Qué es un punto crítico?
+R: Donde la derivada es cero o no existe
+7. ¿Qué es la concavidad de una función?
+R: La forma en que se curva la gráfica
+8. ¿Para qué se usa el análisis de la segunda derivada?
+R: Para determinar concavidad y puntos de inflexión
+9. ¿Qué es un máximo relativo?
+R: Un punto más alto que sus vecinos inmediatos
+10. ¿Qué es un punto de inflexión?
+R: Donde la concavidad cambia
+
+LÍMITES
+---------
+1. lim(x->0) (sin x)/x =
+R: 1
+2. lim(x->infinito) 1/x =
+R: 0
+3. Si el límite lateral izquierdo y derecho no coinciden:
+R: El límite no existe
+4. lim(x->2) (x^2 - 4)/(x - 2) =
+R: 4
+5. Si lim(x->a) f(x) = L, ¿es necesario que f(a) = L?
+R: No
+6. ¿Qué es un límite en cálculo?
+R: El valor al que se acerca una función
+7. ¿Para qué se usan los límites?
+R: Para definir continuidad y derivadas
+8. ¿Qué significa que un límite no exista?
+R: Que la función no se acerca a un solo valor
+9. ¿Qué es un límite lateral?
+R: El valor al que se acerca la función por un solo lado
+10. ¿Qué relación hay entre límite y continuidad?
+R: Una función es continua si el límite existe y coincide con el valor en el punto
+
+DESIGUALDADES
+---------
+1. Resolver: x + 3 < 7
+R: x < 4
+2. Resolver: 2x - 1 >= 5
+R: x >= 3
+3. La desigualdad cuadrática x^2 - 1 < 0 se cumple cuando:
+R: -1 < x < 1
+4. ¿Qué representa gráficamente una desigualdad lineal en dos variables?
+R: Una región en el plano
+5. Resolver: |x - 2| < 5
+R: -3 < x < 7
+6. ¿Qué es una desigualdad?
+R: Una relación de orden entre dos expresiones
+7. ¿Qué es una desigualdad estricta?
+R: Una desigualdad donde no se permite la igualdad
+8. ¿Para qué se usan las desigualdades en la vida real?
+R: Para comparar cantidades, establecer rangos y restricciones
+9. ¿Qué es el conjunto solución de una desigualdad?
+R: El conjunto de valores que la satisfacen
+10. ¿Qué significa graficar una desigualdad?
+R: Representar en el plano los valores que la cumplen
+
+TVI (Teorema del Valor Intermedio)
+---------
+1. El Teorema del Valor Intermedio solo aplica si la función es:
+R: Continua
+2. Si f(a) < 0 y f(b) > 0, entonces existe c in (a,b) tal que:
+R: f(c) = 0
+3. El TVI garantiza la existencia de un valor c tal que:
+R: f(c) = L, para algún valor entre f(a) y f(b)
+4. ¿Cuál es la condición necesaria para aplicar el TVI en un intervalo [a, b]?
+R: f sea continua
+5. ¿Qué significa TVI en cálculo?
+R: Teorema del Valor Intermedio
+6. ¿Por qué es importante el TVI?
+R: Permite garantizar la existencia de soluciones en ecuaciones continuas
+7. ¿Qué condiciones debe cumplir una función para aplicar el TVI?
+R: Ser continua en el intervalo cerrado
+8. ¿Qué tipo de problemas se resuelven con el TVI?
+R: Demostrar la existencia de soluciones
+9. ¿El TVI garantiza el valor exacto de la solución?
+R: No, solo garantiza su existencia
+
+CUADRÁTICAS
+---------
+1. La gráfica de f(x) = ax^2 + bx + c es:
+R: Una parábola
+2. El vértice de una función cuadrática está en:
+R: x = -b/(2a)
+3. Si f(x) = x^2 - 6x + 8, entonces sus raíces son:
+R: 2 y 4
+4. Si el discriminante D = b^2 - 4ac < 0, la parábola:
+R: No corta el eje x
+5. ¿Cuándo una función cuadrática tiene un mínimo absoluto?
+R: Cuando a > 0
+6. ¿Qué es una función cuadrática?
+R: Una función de la forma ax^2+bx+c
+7. ¿Qué determina el coeficiente 'a' en una cuadrática?
+R: La apertura y orientación de la parábola
+8. ¿Qué es el discriminante de una cuadrática?
+R: b^2-4ac
+9. ¿Qué representa el vértice de una parábola?
+R: El punto máximo o mínimo de la función
+10. ¿Para qué se usan las funciones cuadráticas en la vida real?
+R: Para modelar trayectorias, áreas y optimización 
