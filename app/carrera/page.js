@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { FaInfinity, FaSquareRootAlt, FaDivide, FaEquals, FaPlus, FaMinus } from 'react-icons/fa';
 
@@ -115,6 +115,50 @@ export default function Carrera() {
   const [esperandoContinuar, setEsperandoContinuar] = useState(false);
   const [respuestaCorrecta, setRespuestaCorrecta] = useState(false);
   const [avancePorPregunta, setAvancePorPregunta] = useState(10);
+  const [showBonus, setShowBonus] = useState(false);
+  const [bonusStep, setBonusStep] = useState(0);
+  const [bonusAnswers, setBonusAnswers] = useState({});
+
+  // Confeti seguro para SSR/hidratación
+  const [confetiData, setConfetiData] = useState([]);
+  useEffect(() => {
+    setConfetiData(
+      Array.from({ length: 40 }, () => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 2,
+      }))
+    );
+  }, []);
+
+  // Super Pregunta Bonus control
+  const [bonusDisponible, setBonusDisponible] = useState(true);
+  const [rondaBonus, setRondaBonus] = useState(null);
+  const [bonusFeedback, setBonusFeedback] = useState({});
+  const [bonusFinalizado, setBonusFinalizado] = useState(false);
+  const rondaRef = useRef(1);
+
+  // Elegir ronda aleatoria para bonus al iniciar
+  useEffect(() => {
+    if (iniciado) {
+      setBonusDisponible(true);
+      setBonusFinalizado(false);
+      setBonusFeedback({});
+      // Elegir ronda aleatoria entre 1 y 4
+      setRondaBonus(Math.floor(Math.random() * 4) + 1);
+    }
+  }, [iniciado]);
+
+  // Forzar bonus en ronda 4 si no apareció antes
+  useEffect(() => {
+    if (iniciado && ronda > 3 && bonusDisponible && rondaBonus > 4) {
+      setRondaBonus(4);
+    }
+  }, [ronda, iniciado, bonusDisponible, rondaBonus]);
+
+  // Actualizar rondaRef para control interno
+  useEffect(() => {
+    rondaRef.current = ronda;
+  }, [ronda]);
 
   // Inicializar preguntas aleatorias por categoría
   useEffect(() => {
@@ -177,6 +221,158 @@ export default function Carrera() {
   };
 
   const ganador = jugador1 >= 100 ? nombres.j1 || "Jugador 1" : jugador2 >= 100 ? nombres.j2 || "Jugador 2" : null;
+
+  const bonusQuestions = [
+    {
+      pregunta: '¿Cuál es el dominio de la función mostrada?',
+      opciones: [
+        '[-2, 3]',
+        '(-∞, ∞)',
+        '[-3, 3]',
+        '[-2, 2]'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿Cuál es el recorrido (rango) de la función?',
+      opciones: [
+        '[-3, 3]',
+        '(-∞, ∞)',
+        '[0, 3]',
+        '[-2, 2]'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿Cuáles son los ceros de la función?',
+      opciones: [
+        'x = -1.5, x = 0.45, x = 1.5',
+        'x = -2, x = 0, x = 2',
+        'x = -3, x = 0, x = 3',
+        'x = -1, x = 1'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿En qué intervalos la función es positiva?',
+      opciones: [
+        '(-1.5, -0.45) ∪ (1.5, 3]',
+        '(-∞, 0)',
+        '(-2, 0)',
+        '(-1.5, 1.5)'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿En qué intervalos la función es negativa?',
+      opciones: [
+        '[-2, -1.5) ∪ (0.45, 1.5)',
+        '(-∞, 0)',
+        '(-2, 0)',
+        '(-1.5, 1.5)'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿En qué intervalos la función es creciente?',
+      opciones: [
+        '(-2, -0.5) ∪ (1, 3)',
+        '(-∞, 0)',
+        '(-2, 0)',
+        '(-1.5, 1.5)'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿En qué intervalos la función es decreciente?',
+      opciones: [
+        '(-0.5, 1)',
+        '(-∞, 0)',
+        '(-2, 0)',
+        '(-1.5, 1.5)'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿Dónde hay un mínimo absoluto?',
+      opciones: [
+        '(-2, -3)',
+        '(0, 0)',
+        '(3, 3)',
+        '(1, -2)'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿La función está acotada?',
+      opciones: [
+        'Sí, superior e inferiormente',
+        'No está acotada',
+        'Solo superiormente',
+        'Solo inferiormente'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿Presenta simetría la función?',
+      opciones: [
+        'No presenta ningún tipo de paridad',
+        'Es par',
+        'Es impar',
+        'Es periódica'
+      ],
+      respuesta: 0
+    },
+    {
+      pregunta: '¿La función es periódica?',
+      opciones: [
+        'No es periódica',
+        'Sí, con periodo 2',
+        'Sí, con periodo 3',
+        'Sí, con periodo 1'
+      ],
+      respuesta: 0
+    }
+  ];
+
+  // Mostrar botón de bonus solo si está disponible y es la ronda correcta
+  const mostrarBonus = iniciado && !ganador && bonusDisponible && ronda === rondaBonus;
+
+  // Lógica de feedback y avance para la pregunta bonus
+  const handleBonusFinalizar = () => {
+    // Calcular respuestas correctas
+    let correctas = 0;
+    const feedback = {};
+    bonusQuestions.forEach((q, idx) => {
+      if (bonusAnswers[idx] === q.respuesta) {
+        correctas++;
+        feedback[idx] = { correcto: true, correcta: q.opciones[q.respuesta] };
+      } else {
+        feedback[idx] = { correcto: false, correcta: q.opciones[q.respuesta] };
+      }
+    });
+    setBonusFeedback(feedback);
+    setBonusFinalizado(true);
+  };
+
+  const handleBonusReclamar = () => {
+    // Reclamar avance proporcional
+    const correctas = Object.values(bonusFeedback).filter(f => f.correcto).length;
+    const avance = Math.round((correctas / bonusQuestions.length) * 3 * avancePorPregunta);
+    if (turno === 1) {
+      setJugador1(j => Math.min(j + avance, 100));
+      setTurno(2);
+    } else {
+      setJugador2(j => Math.min(j + avance, 100));
+      setTurno(1);
+    }
+    setShowBonus(false);
+    setBonusDisponible(false);
+    setBonusFinalizado(false);
+    setBonusAnswers({});
+    setBonusStep(0);
+    setBonusFeedback({});
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
@@ -372,8 +568,12 @@ export default function Carrera() {
                 <div className="fixed inset-0 z-30 flex flex-col items-center justify-center bg-black bg-opacity-90 animate-fade-in">
                   {/* Confeti animado */}
                   <div className="pointer-events-none absolute inset-0 overflow-hidden z-40">
-                    {[...Array(40)].map((_, i) => (
-                      <div key={i} className={`confeti confeti-${i % 8}`} style={{ left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 2}s` }} />
+                    {confetiData.map((c, i) => (
+                      <div
+                        key={i}
+                        className={`confeti confeti-${i % 8}`}
+                        style={{ left: `${c.left}%`, animationDelay: `${c.delay}s` }}
+                      />
                     ))}
                   </div>
                   {/* Auto ganador con corona */}
@@ -463,6 +663,97 @@ export default function Carrera() {
           100% { transform: translateY(110vh) rotate(360deg); }
         }
       `}</style>
+      {/* Botón de Super Pregunta Bonus */}
+      {mostrarBonus && (
+        <div className="absolute top-4 left-4 z-50">
+          <button
+            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg shadow-lg border-2 border-yellow-600"
+            onClick={() => { setShowBonus(true); setBonusStep(0); setBonusAnswers({}); setBonusFinalizado(false); setBonusFeedback({}); }}
+            disabled={!bonusDisponible}
+          >
+            Super Pregunta Bonus
+          </button>
+        </div>
+      )}
+      {showBonus && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+          <div className="bg-gray-900 rounded-2xl p-8 shadow-2xl max-w-lg w-full relative max-h-[90vh] flex flex-col">
+            <div className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
+              <button
+                className="absolute top-2 right-2 text-white text-2xl font-bold hover:text-red-400"
+                onClick={() => setShowBonus(false)}
+                disabled={bonusFinalizado}
+              >×</button>
+              <h2 className="text-2xl font-bold text-yellow-300 mb-4 text-center">Super Pregunta Bonus</h2>
+              <div className="flex justify-center mb-4">
+                <Image src="/bonus_grafica.png" alt="Gráfica Bonus" width={260} height={180} className="rounded shadow-lg bg-white" />
+              </div>
+              <div className="mb-4">
+                <p className="text-lg text-white font-semibold mb-2">{bonusQuestions[bonusStep].pregunta}</p>
+                <div className="grid grid-cols-1 gap-2">
+                  {bonusQuestions[bonusStep].opciones.map((op, idx) => (
+                    <button
+                      key={idx}
+                      className={`w-full py-2 px-3 rounded-lg font-bold border-2 transition-all ${bonusAnswers[bonusStep] === idx ? 'bg-green-500 text-white border-green-700' : 'bg-gray-800 text-gray-200 border-gray-600 hover:bg-blue-900'}`}
+                      onClick={() => setBonusAnswers({ ...bonusAnswers, [bonusStep]: idx })}
+                      disabled={bonusFinalizado}
+                    >
+                      {op}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Feedback de cada respuesta al finalizar */}
+              {bonusFinalizado && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-white mb-2">Resultados:</h3>
+                  <ul className="text-white text-base space-y-3">
+                    {bonusQuestions.map((q, idx) => (
+                      <li key={idx} className="border-b border-gray-700 pb-2">
+                        <div className="font-semibold text-blue-200 mb-1">{q.pregunta}</div>
+                        <span className={bonusFeedback[idx]?.correcto ? 'text-green-400' : 'text-red-400'}>
+                          {bonusFeedback[idx]?.correcto ? '✔️ Correcto' : '❌ Incorrecto'}
+                        </span>
+                        <div>
+                          <span className="text-gray-300">Respuesta correcta: </span>
+                          <span className="text-yellow-300">{bonusFeedback[idx]?.correcta}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-2 text-blue-200 font-bold">Avance: {Math.round((Object.values(bonusFeedback).filter(f => f.correcto).length / bonusQuestions.length) * 3 * avancePorPregunta)}%</p>
+                  <button
+                    className="mt-4 bg-green-600 text-white px-6 py-3 rounded-xl font-bold text-lg shadow hover:bg-green-700 transition"
+                    onClick={handleBonusReclamar}
+                  >
+                    Finalizar y reclamar recompensa
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-between mt-6">
+              <button
+                className="bg-gray-700 text-white px-4 py-2 rounded-lg font-bold hover:bg-gray-600"
+                onClick={() => setBonusStep(s => Math.max(0, s - 1))}
+                disabled={bonusStep === 0 || bonusFinalizado}
+              >Anterior</button>
+              {bonusStep < bonusQuestions.length - 1 ? (
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700"
+                  onClick={() => setBonusStep(s => s + 1)}
+                  disabled={typeof bonusAnswers[bonusStep] === 'undefined' || bonusFinalizado}
+                >Siguiente</button>
+              ) : (
+                <button
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700"
+                  onClick={handleBonusFinalizar}
+                  disabled={typeof bonusAnswers[bonusStep] === 'undefined' || bonusFinalizado}
+                >Finalizar</button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
