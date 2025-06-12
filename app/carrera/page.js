@@ -111,7 +111,7 @@ export default function Carrera() {
   const [ronda, setRonda] = useState(1);
   const [categoriaActual, setCategoriaActual] = useState(null);
   const [mostrarSeleccionCategoria, setMostrarSeleccionCategoria] = useState(false);
-  const [preguntasDisponibles, setPreguntasDisponibles] = useState([]);
+  const [preguntasDisponibles, setPreguntasDisponibles] = useState({});
   const [esperandoContinuar, setEsperandoContinuar] = useState(false);
   const [respuestaCorrecta, setRespuestaCorrecta] = useState(false);
   const [avancePorPregunta, setAvancePorPregunta] = useState(10);
@@ -168,25 +168,44 @@ export default function Carrera() {
         preguntasMezcladas[cat] = shuffleArray([...preguntasPorCategoria[cat]]);
       });
       setPreguntasDisponibles(preguntasMezcladas);
-      seleccionarCategoriaAleatoria();
+      seleccionarCategoriaAleatoria(preguntasMezcladas);
     }
   }, [iniciado]);
 
-  const seleccionarCategoriaAleatoria = () => {
-    const categorias = Object.keys(preguntasPorCategoria);
-    const categoria = categorias[Math.floor(Math.random() * categorias.length)];
+  // Selecciona una categoría aleatoria con preguntas disponibles
+  const seleccionarCategoriaAleatoria = (pregs = preguntasDisponibles) => {
+    const categoriasConPreguntas = Object.keys(pregs).filter(cat => pregs[cat] && pregs[cat].length > 0);
+    if (categoriasConPreguntas.length === 0) {
+      setCategoriaActual(null);
+      setPreguntaActual(null);
+      return;
+    }
+    const categoria = categoriasConPreguntas[Math.floor(Math.random() * categoriasConPreguntas.length)];
     setCategoriaActual(categoria);
-    setPreguntaActual(0);
+    seleccionarPreguntaAleatoria(categoria, pregs);
   };
 
+  // Selecciona una pregunta aleatoria de la categoría actual
+  const seleccionarPreguntaAleatoria = (categoria, pregs = preguntasDisponibles) => {
+    if (!pregs[categoria] || pregs[categoria].length === 0) {
+      seleccionarCategoriaAleatoria(pregs);
+      return;
+    }
+    const idx = Math.floor(Math.random() * pregs[categoria].length);
+    setPreguntaActual({ ...pregs[categoria][idx], idx });
+  };
+
+  // Cuando el usuario selecciona una categoría manualmente
   const seleccionarCategoria = (categoria) => {
     setCategoriaActual(categoria);
-    setPreguntaActual(0);
+    seleccionarPreguntaAleatoria(categoria);
     setMostrarSeleccionCategoria(false);
   };
 
+  // Avanzar: igual, pero usando preguntaActual.idx
   const avanzar = (opcionSeleccionada) => {
-    const pregunta = preguntasDisponibles[categoriaActual][preguntaActual];
+    if (!preguntaActual) return;
+    const pregunta = preguntaActual;
     const esCorrecto = opcionSeleccionada === pregunta.respuesta;
     setFeedback(esCorrecto ? "✅ ¡Respuesta correcta!" : "❌ Respuesta incorrecta");
     setExplicacion(pregunta.explicacion);
@@ -194,7 +213,18 @@ export default function Carrera() {
     setRespuestaCorrecta(esCorrecto);
   };
 
+  // Continuar ronda: eliminar la pregunta usada y seleccionar otra aleatoria
   const continuarRonda = () => {
+    if (!preguntaActual) return;
+    // Eliminar la pregunta usada
+    setPreguntasDisponibles(prev => {
+      const nuevo = { ...prev };
+      if (nuevo[categoriaActual]) {
+        nuevo[categoriaActual] = nuevo[categoriaActual].filter((_, i) => i !== preguntaActual.idx);
+      }
+      return nuevo;
+    });
+    // Avance y turno igual
     if (turno === 1) {
       if (respuestaCorrecta) setJugador1(j => Math.min(j + avancePorPregunta, 100));
       setTurno(2);
@@ -202,18 +232,24 @@ export default function Carrera() {
       if (respuestaCorrecta) setJugador2(j => Math.min(j + avancePorPregunta, 100));
       setTurno(1);
       setRonda(r => r + 1);
-      // Cada 2 rondas (1 ronda = 1 pregunta por jugador)
       if ((ronda + 1) % 2 === 0) {
         setMostrarSeleccionCategoria(true);
       }
     }
-    // Avanzar a la siguiente pregunta o reiniciar si no hay más
-    if (preguntaActual < preguntasDisponibles[categoriaActual].length - 1) {
-      setPreguntaActual(pa => pa + 1);
-    } else {
-      // Si no hay más preguntas en esta categoría, seleccionar otra
-      seleccionarCategoriaAleatoria();
-    }
+    // Seleccionar siguiente pregunta aleatoria tras un pequeño delay para asegurar el setPreguntasDisponibles
+    setTimeout(() => {
+      if (preguntasDisponibles[categoriaActual] && preguntasDisponibles[categoriaActual].length > 1) {
+        seleccionarPreguntaAleatoria(categoriaActual, {
+          ...preguntasDisponibles,
+          [categoriaActual]: preguntasDisponibles[categoriaActual].filter((_, i) => i !== preguntaActual.idx)
+        });
+      } else {
+        seleccionarCategoriaAleatoria({
+          ...preguntasDisponibles,
+          [categoriaActual]: preguntasDisponibles[categoriaActual].filter((_, i) => i !== preguntaActual.idx)
+        });
+      }
+    }, 0);
     setFeedback(null);
     setExplicacion(null);
     setEsperandoContinuar(false);
@@ -526,10 +562,10 @@ export default function Carrera() {
                         <div className="flex flex-col gap-6 items-center">
                           <div className="w-full bg-gray-900 rounded-2xl p-6 shadow-lg border border-gray-800">
                             <p className="text-xl font-mono text-blue-200 text-center mb-4">
-                              {preguntasDisponibles[categoriaActual][preguntaActual].pregunta}
+                              {preguntaActual.pregunta}
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                              {preguntasDisponibles[categoriaActual][preguntaActual].opciones.map((op, idx) => (
+                              {preguntaActual.opciones.map((op, idx) => (
                                 <button
                                   key={idx}
                                   onClick={() => avanzar(idx)}
